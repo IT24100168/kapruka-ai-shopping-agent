@@ -9,6 +9,10 @@ export interface ChatResponse {
     max_budget: number | null;
     gift_message: string | null;
     recipient_relation: string | null;
+    recipient_name?: string | null;
+    recipient_phone?: string | null;
+    delivery_address?: string | null;
+    sender_name?: string | null;
   };
   bundle: {
     items: Array<{
