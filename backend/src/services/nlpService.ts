@@ -89,13 +89,7 @@ export class NlpService {
       try {
         return await this.executeWithRotation(async (genAI) => {
           const requestOptions = process.env.GEMINI_BASE_URL ? {
-            customFetch: (url: string | URL, init?: RequestInit) => {
-              const targetUrl = url.toString().replace(
-                'https://generativelanguage.googleapis.com',
-                process.env.GEMINI_BASE_URL!
-              );
-              return fetch(targetUrl, init);
-            }
+            baseUrl: process.env.GEMINI_BASE_URL
           } : undefined;
 
           const model = genAI.getGenerativeModel({
@@ -315,13 +309,7 @@ export class NlpService {
       try {
         return await this.executeWithRotation(async (genAI) => {
           const requestOptions = process.env.GEMINI_BASE_URL ? {
-            customFetch: (url: string | URL, init?: RequestInit) => {
-              const targetUrl = url.toString().replace(
-                'https://generativelanguage.googleapis.com',
-                process.env.GEMINI_BASE_URL!
-              );
-              return fetch(targetUrl, init);
-            }
+            baseUrl: process.env.GEMINI_BASE_URL
           } : undefined;
 
           const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' }, requestOptions);
