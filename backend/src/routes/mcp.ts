@@ -48,7 +48,17 @@ router.get(
       
       try {
         const genAI = new GoogleGenerativeAI(keys[i]);
-        const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+        const requestOptions = process.env.GEMINI_BASE_URL ? {
+          customFetch: (url: string | URL, init?: RequestInit) => {
+            const targetUrl = url.toString().replace(
+              'https://generativelanguage.googleapis.com',
+              process.env.GEMINI_BASE_URL!
+            );
+            return fetch(targetUrl, init);
+          }
+        } : undefined;
+
+        const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' }, requestOptions);
         const response = await model.generateContent('Hello! Answer in 1 word.');
         const text = response.response.text().trim();
         logs.push(`  Success! Response: "${text}"`);

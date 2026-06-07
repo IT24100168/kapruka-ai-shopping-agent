@@ -88,10 +88,20 @@ export class NlpService {
     if (this.genAIInstances.length > 0) {
       try {
         return await this.executeWithRotation(async (genAI) => {
+          const requestOptions = process.env.GEMINI_BASE_URL ? {
+            customFetch: (url: string | URL, init?: RequestInit) => {
+              const targetUrl = url.toString().replace(
+                'https://generativelanguage.googleapis.com',
+                process.env.GEMINI_BASE_URL!
+              );
+              return fetch(targetUrl, init);
+            }
+          } : undefined;
+
           const model = genAI.getGenerativeModel({
             model: 'gemini-flash-latest',
             generationConfig: { responseMimeType: 'application/json' },
-          });
+          }, requestOptions);
 
           let historyPrompt = '';
           if (history && history.length > 0) {
@@ -304,7 +314,17 @@ export class NlpService {
     if (this.genAIInstances.length > 0) {
       try {
         return await this.executeWithRotation(async (genAI) => {
-          const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+          const requestOptions = process.env.GEMINI_BASE_URL ? {
+            customFetch: (url: string | URL, init?: RequestInit) => {
+              const targetUrl = url.toString().replace(
+                'https://generativelanguage.googleapis.com',
+                process.env.GEMINI_BASE_URL!
+              );
+              return fetch(targetUrl, init);
+            }
+          } : undefined;
+
+          const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' }, requestOptions);
           
           let historyPrompt = '';
           if (history && history.length > 0) {
