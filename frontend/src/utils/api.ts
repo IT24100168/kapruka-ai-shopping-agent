@@ -67,9 +67,9 @@ export async function sendMessageToConcierge(text: string, history: ChatHistoryI
 
 export async function createCheckoutOrder(payload: {
   cart: Array<{ product_id: string | number; quantity: number }>;
-  recipient: { name: string; phone: string; address: string; email?: string };
-  delivery: { city: string; delivery_date: string; delivery_charge?: number };
-  sender: { name: string; phone: string; email: string };
+  recipient: { name: string; phone: string };
+  delivery: { city: string; address: string; date: string; delivery_charge?: number };
+  sender: { name: string };
   gift_message?: string;
   currency?: string;
 }): Promise<CreateOrderResponse> {
