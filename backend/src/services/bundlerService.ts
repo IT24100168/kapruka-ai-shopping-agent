@@ -49,7 +49,7 @@ export class BundlerService {
         const result = await mcpClient.searchProducts({ q: cleanKw, limit: 5 });
         return {
           keyword: kw,
-          products: result?.products || result?.data?.products || [],
+          products: result?.products || [],
         };
       } catch (err) {
         console.error(`Search failed for keyword "${kw}":`, err);
