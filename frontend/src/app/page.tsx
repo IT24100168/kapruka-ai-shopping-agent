@@ -147,6 +147,7 @@ Where are we sending love today?
   const [perishableItems, setPerishableItems] = useState<string[]>([]);
   const [checkoutData, setCheckoutData] = useState<any>(null);
   const [userLanguage, setUserLanguage] = useState<'english' | 'sinhala' | 'tamil' | 'singlish' | 'tanglish'>('english');
+  const [activeTab, setActiveTab] = useState<'chat' | 'curation'>('chat');
 
   // Catalog filtering states and categories
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -233,6 +234,7 @@ Where are we sending love today?
 
       const result = await createCheckoutOrder(payload);
       setCheckoutData(result);
+      setActiveTab('curation');
 
       let successMsg = `Hari! I have successfully generated your secure guest click-to-pay checkout link. 🌟 Your products and delivery rates are locked for 60 minutes. Please click the "Pay with Guest Checkout" card in the Curation Space on the left to complete your payment securely. Let me know if you need anything else! 😊`;
       if (userLanguage === 'sinhala') {
@@ -466,14 +468,44 @@ Where are we sending love today?
         <div className="flex items-center gap-4 text-xs font-semibold text-gray-500">
           <span>Server Status: <span className="text-green-600 font-bold">● Connected</span></span>
           <span className="border-l border-muted-stone pl-4">60 req/min cap</span>
-        </div>
       </header>
+
+      {/* Mobile Tab Selector */}
+      <div className="lg:hidden bg-white border-b border-muted-stone p-2 flex gap-2 flex-shrink-0">
+        <button
+          onClick={() => setActiveTab('chat')}
+          className={`flex-1 py-2 text-xs font-bold rounded-full transition-all duration-300 ${
+            activeTab === 'chat'
+              ? 'bg-kapruka-purple text-white shadow-sm'
+              : 'bg-transparent text-gray-500 hover:text-kapruka-purple'
+          }`}
+        >
+          Concierge Chat
+        </button>
+        <button
+          onClick={() => setActiveTab('curation')}
+          className={`flex-1 py-2 text-xs font-bold rounded-full transition-all duration-300 relative ${
+            activeTab === 'curation'
+              ? 'bg-kapruka-purple text-white shadow-sm'
+              : 'bg-transparent text-gray-500 hover:text-kapruka-purple'
+          }`}
+        >
+          Hamper & Catalog
+          {cart.length > 0 && (
+            <span className="absolute -top-1 right-2 bg-kapruka-gold text-kapruka-purple font-extrabold text-[9px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+              {cart.reduce((sum, item) => sum + item.quantity, 0)}
+            </span>
+          )}
+        </button>
+      </div>
 
       {/* Main split-pane canvas layout */}
       <div className="flex-grow flex flex-col lg:flex-row overflow-hidden">
         
         {/* Column A: Curation Space (Left 60%) */}
-        <section className="w-full lg:w-3/5 h-full overflow-y-auto p-6 flex flex-col justify-between">
+        <section className={`w-full lg:w-3/5 h-full overflow-y-auto p-6 flex flex-col justify-between ${
+          activeTab === 'curation' ? 'flex' : 'hidden lg:flex'
+        }`}>
           <div>
             {/* Countdown widget when checkoutUrl is available */}
             {checkoutData && (
@@ -592,7 +624,9 @@ Where are we sending love today?
         </section>
 
         {/* Column B: Concierge Terminal (Right 40%) */}
-        <section className="w-full lg:w-2/5 h-full flex flex-col flex-shrink-0">
+        <section className={`w-full lg:w-2/5 h-full flex flex-col flex-shrink-0 ${
+          activeTab === 'chat' ? 'flex' : 'hidden lg:flex'
+        }`}>
           <ChatInterface
             messages={messages}
             onSendMessage={handleSendMessage}
