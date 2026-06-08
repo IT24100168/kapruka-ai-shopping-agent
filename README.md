@@ -6,7 +6,7 @@ An intelligent, conversational gifting concierge and personal shopping agent bui
 
 ## 🚀 Key Features
 
-* **Multi-Lingual NLP Orchestrator**: Understands formal and casual phrasing in English, Sinhala, Tamil, and vernacular dialects like **Singlish** (e.g., *"mata cake ekak one Kandy heta"*) and **Tanglish** (e.g., *"enaku roses venum Colombo 3"*).
+* **Multi-Lingual NLP Orchestrator**: Understands formal and casual phrasing in English, Sinhala, Tamil, and vernacular dialects like **Singlish** (e.g., *"mata cake ekak one Kandy walata heta"*) and **Tanglish** (e.g., *"enaku roses bouquet onnu venum Colombo 3 ku"*).
 * **API Key Rotation & Redundancy**: Configured to cycle through a comma-separated list of multiple Gemini API keys automatically. If one key hits a `429 Too Many Requests` quota limit, the backend rotates to the next key seamlessly to prevent service interruption.
 * **Smart Hamper Bundler & Optimizer**: Searches and bundles multiple items in parallel under a single budget limit. If the cheapest combination exceeds the budget, the local fallback engine warns the user and suggests cheaper categories.
 * **Logistics & Perishability Guardrails**: Proactively runs delivery verification against target cities, calculates real-time shipping fees, and alerts users with temperature warnings for perishable goods like fresh flowers, chocolates, or cakes.
