@@ -77,6 +77,11 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
           
           if (event.error === 'not-allowed') {
             alert('Microphone access is blocked. Please click the microphone lock icon in your browser URL bar and allow microphone permissions.');
+          } else if (event.error === 'service-not-allowed') {
+            const failedLang = recognition.lang;
+            const langName = failedLang === 'si-LK' ? 'Sinhala' : failedLang === 'ta-LK' ? 'Tamil' : 'the selected language';
+            alert(`Aiyo! It looks like your browser or device doesn't support voice input in ${langName}. No worries, we are switching you back to English voice input. You can still type in Sinhala or Tamil!`);
+            setSpeechLang('en-US');
           } else if (event.error === 'no-speech') {
             alert('No speech detected. Please speak clearly into your microphone.');
           } else {
