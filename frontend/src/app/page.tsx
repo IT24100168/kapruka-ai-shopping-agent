@@ -135,7 +135,7 @@ I easily understand English, casual everyday Singlish, and Tanglish text.
 
 Where are we sending love today?
 (e.g., 'Galle walata fresh flowers and a fruit basket yawanna puluwanda heta?')`,
-      timestamp: new Date(),
+      timestamp: new Date('2026-06-08T12:00:00'),
     },
   ]);
   const [cart, setCart] = useState<any[]>([]);

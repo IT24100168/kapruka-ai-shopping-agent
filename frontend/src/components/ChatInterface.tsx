@@ -23,6 +23,7 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const lastClickTimeRef = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -36,19 +37,30 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
 
         recognition.onstart = () => {
           setIsListening(true);
+          console.log('[Speech] Recognition started. Speak now...');
         };
 
         recognition.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
+          console.log('[Speech] Result received:', transcript);
           setInput((prev) => (prev ? prev + ' ' + transcript : transcript));
         };
 
         recognition.onerror = (event: any) => {
-          console.error('Speech recognition error:', event.error);
+          console.error('[Speech] Recognition error:', event.error);
           setIsListening(false);
+          
+          if (event.error === 'not-allowed') {
+            alert('Microphone access is blocked. Please click the microphone lock icon in your browser URL bar and allow microphone permissions.');
+          } else if (event.error === 'no-speech') {
+            alert('No speech detected. Please speak clearly into your microphone.');
+          } else {
+            alert(`Speech recognition error: ${event.error}`);
+          }
         };
 
         recognition.onend = () => {
+          console.log('[Speech] Recognition ended.');
           setIsListening(false);
         };
 
@@ -58,6 +70,13 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
   }, []);
 
   const toggleListening = () => {
+    const now = Date.now();
+    if (now - lastClickTimeRef.current < 800) {
+      console.warn('[Speech] Debounced rapid click.');
+      return;
+    }
+    lastClickTimeRef.current = now;
+
     if (!recognitionRef.current) {
       alert('Speech recognition is not supported in this browser. Please try Chrome, Edge, or Safari.');
       return;
@@ -135,6 +154,7 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
               >
                 <p className="whitespace-pre-line">{message.text}</p>
                 <span
+                  suppressHydrationWarning
                   className={`text-[8px] mt-1 block text-right font-medium ${
                     message.sender === 'user' ? 'text-purple-200' : 'text-gray-400'
                   }`}
