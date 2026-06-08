@@ -633,6 +633,7 @@ Where are we sending love today?
             onSendMessage={handleSendMessage}
             isLoading={isLoading}
             onAddToHamper={handleAddToHamper}
+            userLanguage={userLanguage}
           />
         </section>
 

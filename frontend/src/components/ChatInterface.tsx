@@ -16,14 +16,38 @@ interface ChatInterfaceProps {
   onSendMessage: (text: string) => void;
   isLoading: boolean;
   onAddToHamper: (product: any) => void;
+  userLanguage?: 'english' | 'sinhala' | 'tamil' | 'singlish' | 'tanglish';
 }
 
-export default function ChatInterface({ messages, onSendMessage, isLoading, onAddToHamper }: ChatInterfaceProps) {
+export default function ChatInterface({ messages, onSendMessage, isLoading, onAddToHamper, userLanguage }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [speechLang, setSpeechLang] = useState<'en-US' | 'si-LK' | 'ta-LK'>('en-US');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
   const lastClickTimeRef = useRef<number>(0);
+
+  // Auto-detect and set speech recognition language based on active user typing context
+  useEffect(() => {
+    if (userLanguage === 'sinhala') {
+      setSpeechLang('si-LK');
+      console.log('[Speech] Auto-configured spoken language to Sinhala (si-LK)');
+    } else if (userLanguage === 'tamil') {
+      setSpeechLang('ta-LK');
+      console.log('[Speech] Auto-configured spoken language to Tamil (ta-LK)');
+    } else {
+      setSpeechLang('en-US');
+      console.log('[Speech] Auto-configured spoken language to English (en-US)');
+    }
+  }, [userLanguage]);
+
+  const onSendMessageRef = useRef(onSendMessage);
+  const isLoadingRef = useRef(isLoading);
+
+  useEffect(() => {
+    onSendMessageRef.current = onSendMessage;
+    isLoadingRef.current = isLoading;
+  }, [onSendMessage, isLoading]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -33,7 +57,6 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
         const recognition = new SpeechRecognition();
         recognition.continuous = false;
         recognition.interimResults = false;
-        recognition.lang = 'en-US';
 
         recognition.onstart = () => {
           setIsListening(true);
@@ -43,7 +66,9 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
         recognition.onresult = (event: any) => {
           const transcript = event.results[0][0].transcript;
           console.log('[Speech] Result received:', transcript);
-          setInput((prev) => (prev ? prev + ' ' + transcript : transcript));
+          if (transcript.trim() && !isLoadingRef.current) {
+            onSendMessageRef.current(transcript.trim());
+          }
         };
 
         recognition.onerror = (event: any) => {
@@ -69,6 +94,14 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
     }
   }, []);
 
+  const cycleSpeechLang = () => {
+    setSpeechLang((prev) => {
+      if (prev === 'en-US') return 'si-LK';
+      if (prev === 'si-LK') return 'ta-LK';
+      return 'en-US';
+    });
+  };
+
   const toggleListening = () => {
     const now = Date.now();
     if (now - lastClickTimeRef.current < 800) {
@@ -86,6 +119,7 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
       recognitionRef.current.stop();
     } else {
       try {
+        recognitionRef.current.lang = speechLang;
         recognitionRef.current.start();
       } catch (err) {
         console.error('Error starting recognition:', err);
@@ -216,6 +250,17 @@ export default function ChatInterface({ messages, onSendMessage, isLoading, onAd
       {/* Input Dock */}
       <div className="p-4 border-t border-muted-stone bg-white/80 backdrop-blur-sm">
         <form onSubmit={handleSubmit} className="flex gap-2 items-center">
+          {/* Language Selector Toggle */}
+          <button
+            type="button"
+            onClick={cycleSpeechLang}
+            className="px-3 py-3 bg-luxury-ivory hover:bg-muted-stone/50 border border-muted-stone rounded-full text-[10px] font-extrabold text-kapruka-purple flex items-center gap-1 transition-all duration-300 shadow-xs"
+            title="Switch Spoken Language (EN / සිංහල / தமிழ்)"
+          >
+            <span>🌐</span>
+            <span>{speechLang === 'en-US' ? 'EN' : speechLang === 'si-LK' ? 'සිං' : 'தமிழ்'}</span>
+          </button>
+
           {/* Active Input Dock with voice mic trigger */}
           <button
             type="button"
