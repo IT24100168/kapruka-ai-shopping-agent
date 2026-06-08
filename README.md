@@ -8,10 +8,10 @@ An intelligent, conversational gifting concierge and personal shopping agent bui
 
 Test the application live online using these links:
 * **Frontend Client (Vercel)**: [https://kapruka-ai-shopping-agent.vercel.app](https://kapruka-ai-shopping-agent.vercel.app)
-* **Backend API Gateway (Render)**: [https://kapruka-ai-shopping-agent.onrender.com](https://kapruka-ai-shopping-agent.onrender.com)
+* **Backend API Gateway (Render)**
 
 > [!NOTE]
-> * **Secure Context for Voice (HTTPS)**: Browsers require a secure context (`https://`) to grant microphone permissions. Use the live HTTPS link above to test the speech recognition voice triggers.
+> * **Secure Context for Voice (HTTPS)**: Browsers require a secure context (`https://`) to grant microphone permissions. Use the live HTTPS link above to test the speech recognition voice triggers. Also, the English and Tamil voice options only work on the Google Chrome browser due to limitations in Chrome's Web Speech API.
 > * **Render Free Tier Cold Starts**: Since the backend is hosted on a free Render tier, the first request may experience a **30-50 second delay** while the server spins up. Once awake, the concierge responds instantly.
 > * **Zero Downtime API Rotation**: The backend is configured to automatically cycle through multiple Gemini API keys. If one key hits limit restrictions, it falls back seamlessly to keep the online service operational.
 
