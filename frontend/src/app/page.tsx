@@ -468,6 +468,7 @@ Where are we sending love today?
         <div className="flex items-center gap-4 text-xs font-semibold text-gray-500">
           <span>Server Status: <span className="text-green-600 font-bold">● Connected</span></span>
           <span className="border-l border-muted-stone pl-4">60 req/min cap</span>
+        </div>
       </header>
 
       {/* Mobile Tab Selector */}
